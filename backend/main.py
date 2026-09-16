@@ -77,6 +77,8 @@ app.add_middleware(
 
 # Mount static files for sign assets
 signs_dir = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "signs")
+if not os.path.isdir(signs_dir):
+    signs_dir = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist", "signs")
 if os.path.isdir(signs_dir):
     app.mount("/signs", StaticFiles(directory=signs_dir), name="signs")
 
@@ -104,11 +106,17 @@ async def vocabulary():
     return get_registry()
 
 
-@app.get("/")
-async def root():
-    return {
-        "app": "SignBridge",
-        "description": "Assistive Sign-Language-to-Speech Translator",
-        "docs": "/docs",
-        "health": "/api/health"
-    }
+# Mount production frontend dist if available, else API fallback
+frontend_dist = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+if os.path.isdir(frontend_dist):
+    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+else:
+    @app.get("/")
+    async def root():
+        return {
+            "app": "SignBridge",
+            "description": "Assistive Sign-Language-to-Speech Translator",
+            "docs": "/docs",
+            "health": "/api/health"
+        }
+
