@@ -114,14 +114,8 @@ def get_model_labels() -> Dict[str, List[str]]:
 
 
 
-# Import precision feature extractors from ml.preprocess
-try:
-    import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-    from ml.preprocess import compute_precision_features, compute_temporal_precision_features
-except ImportError:
-    compute_precision_features = None
-    compute_temporal_precision_features = None
+# Import precision feature extractors (pure NumPy)
+from .features import compute_precision_features, compute_temporal_precision_features
 
 
 def predict_static(landmarks: List[float], top_k: int = 5) -> Optional[Dict]:

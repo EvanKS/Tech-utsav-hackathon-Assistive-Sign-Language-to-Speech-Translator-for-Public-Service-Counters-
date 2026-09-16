@@ -3,14 +3,22 @@ Landmark extraction and normalization using MediaPipe HandLandmarker (Tasks API)
 Extracts 21 hand landmarks (x, y, z) = 63-dim feature vector per frame.
 """
 import os
-import cv2
 import numpy as np
-import mediapipe as mp
 
-HandLandmarker = mp.tasks.vision.HandLandmarker
-HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
-RunningMode = mp.tasks.vision.RunningMode
-BaseOptions = mp.tasks.BaseOptions
+try:
+    import cv2
+    import mediapipe as mp
+    HandLandmarker = mp.tasks.vision.HandLandmarker
+    HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
+    RunningMode = mp.tasks.vision.RunningMode
+    BaseOptions = mp.tasks.BaseOptions
+except ImportError:
+    cv2 = None
+    mp = None
+    HandLandmarker = None
+    HandLandmarkerOptions = None
+    RunningMode = None
+    BaseOptions = None
 
 # Path to the hand landmarker model - will be downloaded if needed
 _MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "hand_landmarker.task")
